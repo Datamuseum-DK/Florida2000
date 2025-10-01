@@ -19,6 +19,8 @@ We scan the punched cards with these parameters:
    * duplex (so we can compare front and back readings)
    * tail-first (to get a clean front edge to work from)
 
+![Picture of correct orientation of cards in scanner](scan_card.png)
+
 Images included in Examples/:
 
    * example_00_*.png - Interestingly complex card
