@@ -249,6 +249,25 @@ class PunchedCard():
         if self.debug:
             imageio.imwrite(debug_image, self.im)
 
+    def write_crd_file(self, file):
+        ''' write a .CRD record '''
+
+        l = []
+        for i in self.values:
+            l.append((i & 0xf) << 4)
+            l.append(i >> 4)
+        assert len(l) == 160
+        file.write(bytes(l))
+
+    def write_crd(self, filename=None, mode="wb"):
+        ''' Write a SIMH-CRD record '''
+
+        if filename is None:
+            filename = self.fn + ".crd"
+        assert 'b' in mode
+        with open(filename, mode) as file:
+            self.write_crd_file(file)
+
     def ebcdic(self):
         ''' Convert hole-pattern to EBCDIC '''
 
@@ -262,7 +281,7 @@ class PunchedCard():
     def dump(self):
         ''' Debugging aid '''
 
-        yield self.utf8()
+        yield str([self.utf8()])
         for row in range(1, 13):
             i = []
             for col in range(1, 81):
@@ -422,22 +441,3 @@ class PunchedCard():
             self.im[y-self.HOLE_Y:y+self.HOLE_Y+1,x-self.HOLE_X:x+self.HOLE_X+1] += 128
 
         return 0, 0, 0, 0
-
-def main(argv):
-    ''' Expects arguments to be pairs of front+back images '''
-
-    argv.pop(0)
-    for i in range(0, len(argv), 2):
-        f = PunchedCard(argv[i],  front=True,) # debug_image="/tmp/_f.png")
-        b = PunchedCard(argv[i+1], front=False,) # debug_image="/tmp/_b.png")
-        if f.values != b.values:
-            print("bad ", f.utf8().ljust(80), argv[i], argv[i+1])
-            for i in f.dump():
-                print("# fs " + i)
-            for i in b.dump():
-                print("# bs " + i)
-        else:
-            print("good", f.utf8().ljust(80), argv[i], argv[i+1])
-
-if __name__ == "__main__":
-    main(sys.argv)
