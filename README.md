@@ -1,3 +1,7 @@
+# Florida2000 has moved
+
+Find it here now: https://codeberg.org/Datamuseum-dk/Florida2000
+
 # Florida2000 - Read punched cards with a document scanner
 
 This is a python hack which can read punched cards when we scan them on
